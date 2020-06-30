@@ -16,43 +16,26 @@ var q = d3_queue.queue(1)
 function draw(error, data) {
     "use strict";
   
-    // important: First argument it expects is error
     if (error) throw error;
   
-    // console.log(data[0])
-    // for(var each in data[0].features.properties)
-    // {
-    //   console.log(each)
-    // }
+
     var color = d3.scaleThreshold()
       .domain([0, 100, 150, 200, 250, 300, 350, 400, 450])
       .range(["#FFFFFF", "#DDEBFF", "#98C2FF", "#73ACFF", "#5097FF", "#2A80FF", "#0C6EFF", "#005FEC","#004EC1"]);
   
-    // create a projection properly scaled for SF
     var projection = d3.geoMercator()
       .center([-105.475101, 38.565383])
       .scale(170*5)
       .translate([width/2, height/2]);
 
-    // var projection = d3.geo.albersUsa()
-    // .translate([width/2, height/2])    // translate to center of screen
-    // .scale([1000]);
-  
-    // create a path to draw the neighborhoods
     var path = d3.geoPath()
       .projection(projection);
   
-    // create and append the map of SF neighborhoods
     var map = d3.select('#map').selectAll('path')
       .data(data[0].features)
       .enter()
       .append('path')
       .attr('d', path);
-      //.style('stroke', 'black')
-      //.style('stroke-width', 0.75);
-  
-  
-    // // normalize neighborhood names
     
     map.datum(function(d) {
       data[1].filter(function(x){
@@ -64,7 +47,6 @@ function draw(error, data) {
       return d;
     });
   
-    // // add the name as its class
     map
       .attr('class', function(d) {
         console.log(d.properties.NAME)
