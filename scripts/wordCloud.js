@@ -53,7 +53,7 @@ function WordCloud(data, state)
         })
         var scale = d3.scaleLinear()
                       .domain([d3.min(myWords,d=>d.size),d3.max(myWords,d=>d.size)])
-                      .range([10,78]);
+                      .range([20,78]);
         layout.words(myWords.map(function(d) { return {text: d.word, size:d.size}; }))
             .padding(5)        //space between words
             .rotate(function() { return ~~(Math.random() * 2) * 90; })
@@ -80,6 +80,7 @@ function WordCloud(data, state)
             .attr("text-anchor", "middle")
             .style("font-family", "Impact")
             .attr("transform", function(d) {
+                console.log(d);
             return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
             })
             .text(function(d) { return d.text; });
