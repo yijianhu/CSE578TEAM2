@@ -1,10 +1,7 @@
 var geoUrl = "./data/usStates.geojson";
 var dataUrl ="./data/restaurant.csv";
 
-var margin = 50,
-    boundingBox = d3.select("#map").node().getBoundingClientRect(),
-    width = boundingBox.width- margin,
-    height = boundingBox.height- margin;
+
 
 var t = 100
 
@@ -18,6 +15,12 @@ function draw(error, data) {
   
     if (error) throw error;
   
+    var margin = 50,
+    boundingBox = d3.select("#map").node().getBoundingClientRect(),
+    width = boundingBox.width- margin,
+    height = boundingBox.height- margin;
+
+    console.log(data);
 
     var color = d3.scaleThreshold()
       .domain([0, 100, 150, 200, 250, 300, 350, 400, 450])
@@ -25,7 +28,7 @@ function draw(error, data) {
   
     var projection = d3.geoMercator()
       .center([-105.475101, 38.565383])
-      .scale(170*5)
+      .scale(500)
       .translate([width/2, height/2]);
 
     var path = d3.geoPath()
@@ -101,6 +104,9 @@ function draw(error, data) {
       .style("z-index", "10")
       .style("visibility", "hidden")
       .text("a simple tooltip");
+
+    var wordcloud = new WordCloud(data[1]);
+    wordcloud.updateWords("Maine");
   
     map
       .on("mouseover", function(d) 
@@ -115,6 +121,7 @@ function draw(error, data) {
       .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
       .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
       .on("mouseover", function(d) {
+        wordcloud.updateWords(d.properties.NAME);
         return tooltip.style("visibility", "visible")
         .html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );});
   
