@@ -2,7 +2,8 @@ var geoUrl = "./data/usStates.geojson";
 var dataUrl ="./data/restaurant.csv";
 var azgeo = "./data/AZcounties.geojson";
 var usa_cities = "./data/usa-cities.geojson";
-//geoUrl=usa_cities;
+var azzip = "./data/AZzip.geojson";
+//geoUrl=azzip;
 
 
 var t = 100
@@ -10,7 +11,6 @@ var t = 100
 var q = d3_queue.queue(1)
 .defer(d3.json, geoUrl)
 .defer(d3.csv, dataUrl)
-.defer(d3.json, usa_cities)
 .awaitAll(draw);
 
 function draw(error, data) {
@@ -25,19 +25,28 @@ function draw(error, data) {
     
     console.log(data);
 
+    var minCount, maxCount, detCount;
+    minCount = d3.min(data[1],d=>d.Count);
+    maxCount = d3.max(data[1],d=>d.Count);
+    detCount = maxCount - minCount;
+    console.log(minCount);
+    console.log(detCount);
+    console.log(maxCount);
+
+
     var color = d3.scaleThreshold()
-      .domain([0, 100, 150, 200, 250, 300, 350, 400, 450])
+      .domain([0, 10000,20000, 30000, 40000, 50000, 60000, 70000, 100000])
       .range(["#FFFFFF", "#DDEBFF", "#98C2FF", "#73ACFF", "#5097FF", "#2A80FF", "#0C6EFF", "#005FEC","#004EC1"]);
   
-    // var projection = d3.geoMercator()
-    //   .center([-105.475101, 38.565383])
-    //   .scale(500)
-    //   .translate([width/2, height/2]);
-
     var projection = d3.geoMercator()
       .center([-105.475101, 38.565383])
       .scale(500)
       .translate([width/2, height/2]);
+
+    // var projection = d3.geoMercator()
+    //   .center([-112.475101, 34.565383])
+    //   .scale(4500)
+    //   .translate([width/2, height/2]);
 
     var path = d3.geoPath()
       .projection(projection);
@@ -48,13 +57,9 @@ function draw(error, data) {
       .append('path')
       .attr('d', path);
 
-      map.data(data[2].features)
-      .enter()
-      .append('path')
-      .attr('d', path);
+
     
     map.datum(function(d) {
-      console.log(d);
       data[1].filter(function(x){
           if(x.State==d.properties.NAME)
           {
@@ -70,12 +75,17 @@ function draw(error, data) {
       })
       .attr("fill", function(d) {
           return color(d.properties.Count);})
+
+      // map.data(data[2].features)
+      // .enter()
+      // .append('path')
+      // .attr('d', path);
   
   
   
     var newRange = d3.scaleLinear()
-        .domain([0, 450])
-        .range([0, width/2]);
+        .domain([0, 100000])
+        .range([0, width/1.5]);
   
     var xAxis = d3.axisBottom(newRange)
         .tickSize(13)
@@ -137,6 +147,7 @@ function draw(error, data) {
         wordcloud.updateWords(d.properties.NAME);
         return tooltip.style("visibility", "visible")
         .html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );});
+        //.html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );});
   
   
     function animation()

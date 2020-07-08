@@ -67,6 +67,9 @@ function WordCloud(data, state)
     // Wordcloud features that are THE SAME from one word to the other can be here
     function draw(words) {
     //console.log(words);
+    var alphaScale = d3.scaleLinear()
+                        .domain([20,78])
+                        .range([0.5,1]);
     svg
         .selectAll("g").remove();
     svg
@@ -77,6 +80,7 @@ function WordCloud(data, state)
         .enter().append("text")
             .style("font-size", function(d) { return d.size; })
             .style("fill", "#69b3a2")
+            .style('opacity',d=>alphaScale(d.size))
             .attr("text-anchor", "middle")
             .style("font-family", "Impact")
             .attr("transform", function(d) {
