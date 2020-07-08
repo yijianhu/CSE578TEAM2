@@ -49,25 +49,40 @@ def load_pkl(path):
     return obj
 
 
-bag_of_words = load_pkl('../yelp_dataset/categories_model_zip.pkl')
+# bag_of_words = load_pkl('../yelp_dataset/categories_model.pkl')
 
-top_words = []
+# top_words = {}
 
-for zip in bag_of_words:
-    print(zip)
-    if len(bag_of_words[zip]) > 0:
-        # top_words[zip] = {}
+# for state in bag_of_words:
+#     print(state)
+#     # if len(bag_of_words[state]["positive"]) > 0 and len(bag_of_words[state]["negative"]) > 0:
+# 	# top_words[state] = {}
 
-        categories_df = pd.DataFrame.from_dict(bag_of_words[zip], orient='index', columns=['count'])
-        top_words.append((zip, categories_df.nlargest(1, 'count').index[0]))
+# 	# categories_df = pd.DataFrame.from_dict(bag_of_words[state], orient='index', columns=['count'])
+# 	# top_words[state] = categories_df.nlargest(10, 'count')
 
-    else:
-        print("!! EMPTY !!")
+#     # else:
+#     #     print("!! EMPTY !!")
 
-top_words_df = pd.DataFrame(top_words, columns=['zip', 'category'])
-save_pkl('../yelp_dataset/top_category_zip.pkl', top_words_df)
-print(top_words_df)
+# print(top_words)
 
+from sqlalchemy import create_engine
+
+x = load_pkl("../yelp_dataset/yelp_academic_dataset_business.pkl")
+
+y = x[["business_id", "name", "city", "state", "postal_code"]]
+
+engine = create_engine('sqlite:///yelp_academic_dataset_business.db', echo=True)
+sqlite_connection = engine.connect()
+
+sqlite_table = "Businesses"
+y.to_sql(sqlite_table, sqlite_connection, if_exists='fail')
+
+sqlite_connection.close()
+
+# y = x.loc[x["state"] == "MO"]
+
+# print(y)
 
 
 

@@ -16,7 +16,7 @@ import re
 
 from tqdm import tqdm
 
-IGNORE_CATEGORIES = []
+IGNORE_CATEGORIES = ["Restaurants", "Food", "Bars", "Nightlife", "Fast Food"]
 
 #
 # Saves an object to pickle file. If it exists then delete and create a new one.
@@ -52,32 +52,34 @@ def load_pkl(path):
     return obj
 
 # Get data
-restaurant_df = load_pkl('../yelp_dataset/yelp_academic_dataset_restaurant.pkl')
+restaurant_df = load_pkl('../yelp_dataset/yelp_academic_dataset_restaurant_usa.pkl')
 
 word_freq = {}
 
 for index, row in tqdm(restaurant_df.iterrows()):
-    # Get the State
-    restaurant_state = row['state']
-    # Add State key to dictionary if not exists
-    if restaurant_state not in word_freq.keys():
-        word_freq[restaurant_state] = {}
+    # Get the zip
+    restaurant_zip = row['postal_code']
+    # Add zip key to dictionary if not exists
+    if restaurant_zip not in word_freq.keys():
+        word_freq[restaurant_zip] = {}
     # Standardize the text (lowercase, remove punctuation etc.)
     categories_text = row['categories']
     if categories_text:
-        categories_text = categories_text.lower()
+        # categories_text = categories_text.lower()
         # Tokenize the words in the review
         tokens = categories_text.split(",")
         tokens = [w.strip() for w in tokens]
         tokens = [w for w in tokens if not w in IGNORE_CATEGORIES]
         # Separate out positive and negative reviews into different bag-of-words models
         for token in tokens:
-            if token not in word_freq[restaurant_state].keys():
-                word_freq[restaurant_state][token] = 1
+            if token not in word_freq[restaurant_zip].keys():
+                word_freq[restaurant_zip][token] = 1
             else:
-                word_freq[restaurant_state][token] += 1
+                word_freq[restaurant_zip][token] += 1
 
-save_pkl('../yelp_dataset/categories_model.pkl', word_freq)
+save_pkl('../yelp_dataset/categories_model_zip.pkl', word_freq)
+
+print(word_freq)
 
 
 
