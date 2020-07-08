@@ -13,6 +13,10 @@ seaborn = "*"
 nltk = "*"
 bs4 = "*"
 lxml = "*"
+sqlalchemy = "*"
+geopandas = "*"
+geopy = "*"
+plotly-express = "*"
 
 [requires]
 python_version = "3.7"

@@ -54,24 +54,24 @@ def load_pkl(path):
 
 # Get data
 reviews_df = load_pkl('../yelp_dataset/yelp_academic_dataset_review.pkl')
-restaurant_df = load_pkl('../yelp_dataset/yelp_academic_dataset_restaurant.pkl')
-# Get just the states
-restaurant_states_df = restaurant_df[['business_id', 'state']]
+restaurant_df = load_pkl('../yelp_dataset/yelp_academic_dataset_restaurant_az_counties.pkl')
+# Get just the counties
+restaurant_counties_df = restaurant_df[['business_id', 'county']]
 # Inner Join the two dataframes
-combined_df = reviews_df.set_index('business_id').join(restaurant_states_df.set_index('business_id'), how="inner")
+combined_df = reviews_df.set_index('business_id').join(restaurant_counties_df.set_index('business_id'), how="inner")
 
 word_freq = {}
 # Get stop words
 stop_words = set(nltk.corpus.stopwords.words('english'))
 
 for index, row in tqdm(combined_df.iterrows()):
-    # Get the State
-    restaurant_state = row['state']
-    # Add State key to dictionary if not exists
-    if restaurant_state not in word_freq.keys():
-        word_freq[restaurant_state] = {}
-        word_freq[restaurant_state]["positive"] = {}
-        word_freq[restaurant_state]["negative"] = {}
+    # Get the County
+    restaurant_county = row['county']
+    # Add County key to dictionary if not exists
+    if restaurant_county not in word_freq.keys():
+        word_freq[restaurant_county] = {}
+        word_freq[restaurant_county]["positive"] = {}
+        word_freq[restaurant_county]["negative"] = {}
     # Standardize the text (lowercase, remove punctuation etc.)
     review_text = row['text']
     if review_text:
@@ -85,27 +85,18 @@ for index, row in tqdm(combined_df.iterrows()):
         # Separate out positive and negative reviews into different bag-of-words models
         if row['stars'] > 3:
             for token in tokens:
-                if token not in word_freq[restaurant_state]["positive"].keys():
-                    word_freq[restaurant_state]["positive"][token] = 1
+                if token not in word_freq[restaurant_county]["positive"].keys():
+                    word_freq[restaurant_county]["positive"][token] = 1
                 else:
-                    word_freq[restaurant_state]["positive"][token] += 1
+                    word_freq[restaurant_county]["positive"][token] += 1
         elif row['stars'] < 3:
             for token in tokens:
-                if token not in word_freq[restaurant_state]["negative"].keys():
-                    word_freq[restaurant_state]["negative"][token] = 1
+                if token not in word_freq[restaurant_county]["negative"].keys():
+                    word_freq[restaurant_county]["negative"][token] = 1
                 else:
-                    word_freq[restaurant_state]["negative"][token] += 1
+                    word_freq[restaurant_county]["negative"][token] += 1
 
-save_pkl('../yelp_dataset/bag_of_words_model.pkl', word_freq)
-
-import heapq
-positive_most_freq = heapq.nlargest(10, word_freq["NY"]["positive"], key=word_freq["AZ"]["positive"].get)
-
-print(positive_most_freq)
-
-negative_most_freq = heapq.nlargest(10, word_freq["NY"]["negative"], key=word_freq["AZ"]["negative"].get)
-
-print(negative_most_freq)
+save_pkl('../yelp_dataset/bag_of_words_model_az.pkl', word_freq)
 
 
 

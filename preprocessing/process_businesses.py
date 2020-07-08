@@ -38,14 +38,41 @@ def load_pkl(path):
 
     return obj
 
+def get_county(lat, lon):
+    locator = Nominatim(user_agent="myGeocoder", timeout=5)
+    coordinates = str(lat) + ", " + str(lon)
+    location = locator.reverse(coordinates)
+    if "county" in location.raw["address"].keys():
+        return location.raw["address"]["county"]
+    else:
+        print(location.raw["address"])
+        return None
+
+
+import pandas as pd
+import geopandas as gpd
+import geopy
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
+import matplotlib.pyplot as plt
+import plotly_express as px
+import tqdm
+from tqdm._tqdm_notebook import tqdm_notebook
+
 businesses_df = load_pkl('../yelp_dataset/yelp_academic_dataset_business.pkl')
 
 # Filter to get only restaurants
 restaurants_df = businesses_df[businesses_df['categories'].str.contains("restaurant", flags = re.IGNORECASE) | businesses_df['categories'].str.contains("food", flags = re.IGNORECASE)]
+restaurants_df = restaurants_df.loc[restaurants_df['state'] == "AZ"]
 # Re-index the dataframe
 restaurants_df = restaurants_df.reset_index(drop=True)
+
+restaurants_df['county'] = restaurants_df.apply(lambda x: get_county(x['latitude'],x['longitude']),axis=1)
+
+print(restaurants_df['county'])
+
 # Save as pickle
-save_pkl('../yelp_dataset/yelp_academic_dataset_restaurant.pkl', restaurants_df)
+save_pkl('../yelp_dataset/yelp_academic_dataset_restaurant_az_counties.pkl', restaurants_df)
 
 
 
