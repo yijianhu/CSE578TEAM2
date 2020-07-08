@@ -110,7 +110,7 @@ function draw(error, data) {
         .attr("width", function(d) { return newRange(d[1]) - newRange(d[0]); })
         .attr("fill", function(d) { return color(d[0]); });
   
-    legendCanvas.selectAll(".tick").selectAll("text").text(function(d){if(d==45)return "40+";else return d;})
+    legendCanvas.selectAll(".tick").selectAll("text").text(function(d){return parseInt(d/1000)+'k';})
     
     legendCanvas.append("text")
         .attr("fill", "#000")
