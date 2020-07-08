@@ -26,8 +26,8 @@ function draw(error, data) {
     console.log(data);
 
     var minCount, maxCount, detCount;
-    minCount = d3.min(data[1],d=>d.Count);
-    maxCount = d3.max(data[1],d=>d.Count);
+    minCount = d3.min(data[1],d=>parseInt(d.Count));
+    maxCount = d3.max(data[1],d=>parseInt(d.Count));
     detCount = maxCount - minCount;
     console.log(minCount);
     console.log(detCount);
@@ -35,7 +35,7 @@ function draw(error, data) {
 
 
     var color = d3.scaleThreshold()
-      .domain([0, 10000,20000, 30000, 40000, 50000, 60000, 70000, 100000])
+      .domain([0, minCount,minCount+detCount*1/13, minCount+detCount*1/13, minCount+detCount*2/13, minCount+detCount*3/13, minCount+detCount*5/13, minCount+detCount*8/13, maxCount])
       .range(["#FFFFFF", "#DDEBFF", "#98C2FF", "#73ACFF", "#5097FF", "#2A80FF", "#0C6EFF", "#005FEC","#004EC1"]);
   
     var projection = d3.geoMercator()
@@ -84,7 +84,7 @@ function draw(error, data) {
   
   
     var newRange = d3.scaleLinear()
-        .domain([0, 100000])
+        .domain([0, maxCount])
         .range([0, width/1.5]);
   
     var xAxis = d3.axisBottom(newRange)
