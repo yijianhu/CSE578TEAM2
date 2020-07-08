@@ -49,26 +49,46 @@ def load_pkl(path):
     return obj
 
 
-bag_of_words = load_pkl('../yelp_dataset/bag_of_words_model_az.pkl')
+bag_of_words = load_pkl('../yelp_dataset/bag_of_words_model_zip.pkl')
 
-top_words = {}
+top_words_positive = []
+top_words_negative = []
 
-for county in bag_of_words:
-    # if len(bag_of_words[county]["positive"]) > 0 and len(bag_of_words[county]["negative"]) > 0:
-	top_words[county] = {}
+for zip in bag_of_words:
+    if len(bag_of_words[zip]["positive"]) > 0 and len(bag_of_words[zip]["negative"]) > 0:
 
-	positive = bag_of_words[county]["positive"]
-	positive_df = pd.DataFrame.from_dict(positive, orient='index', columns=['count'])
-	top_words[county]["positive"] = positive_df.nlargest(50, 'count')
+        positive = bag_of_words[zip]["positive"]
+        positive_df = pd.DataFrame.from_dict(positive, orient='index', columns=['count']).nlargest(50, 'count')
 
-	negative = bag_of_words[county]["negative"]
-	negative_df = pd.DataFrame.from_dict(negative, orient='index', columns=['count'])
-	top_words[county]["negative"] = negative_df.nlargest(50, 'count')
-    # else:
-    #     print("!! EMPTY !!")
+        negative = bag_of_words[zip]["negative"]
+        negative_df = pd.DataFrame.from_dict(negative, orient='index', columns=['count']).nlargest(50, 'count')
 
-print(top_words)
+        positive_row = []
+        positive_row.append(zip)
+        for index, row in positive_df.iterrows():
+            positive_row.append(index)
+            positive_row.append(row['count'])
 
+        top_words_positive.append(positive_row)
+
+        negative_row = []
+        negative_row.append(zip)
+        for index, row in negative_df.iterrows():
+            negative_row.append(index)
+            negative_row.append(row['count'])
+
+        top_words_negative.append(negative_row)
+
+    else:
+        print("!! EMPTY !!")
+
+top_words_positive_df = pd.DataFrame(top_words_positive)
+save_pkl('../yelp_dataset/top_words_positive.pkl', top_words_positive_df)
+print(top_words_positive_df)
+
+top_words_negative_df = pd.DataFrame(top_words_negative)
+save_pkl('../yelp_dataset/top_words_negative.pkl', top_words_negative_df)
+print(top_words_negative_df)
 
 
 

@@ -48,27 +48,13 @@ def load_pkl(path):
 
     return obj
 
+top_words_negative_df = load_pkl('../yelp_dataset/top_words_negative.pkl')
+top_category_df = load_pkl('../yelp_dataset/top_category_zip.pkl')
 
-bag_of_words = load_pkl('../yelp_dataset/categories_model_zip.pkl')
+combined_df = top_category_df.set_index('zip').join(top_words_negative_df.set_index(0), how="inner")
 
-top_words = []
+print(combined_df)
 
-for zip in bag_of_words:
-    print(zip)
-    if len(bag_of_words[zip]) > 0:
-        # top_words[zip] = {}
-
-        categories_df = pd.DataFrame.from_dict(bag_of_words[zip], orient='index', columns=['count'])
-        top_words.append((zip, categories_df.nlargest(1, 'count').index[0]))
-
-    else:
-        print("!! EMPTY !!")
-
-top_words_df = pd.DataFrame(top_words, columns=['zip', 'category'])
-save_pkl('../yelp_dataset/top_category_zip.pkl', top_words_df)
-print(top_words_df)
-
-
-
+combined_df.to_csv('../yelp_dataset/negative_reviews.csv', index=True)
 
 
