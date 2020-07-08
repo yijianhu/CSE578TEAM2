@@ -44,7 +44,7 @@ function WordCloud(data, state)
             if(d.State == state)
             {
                 //console.log(d);
-                for (var i=1;i<Object.keys(d).length/2;i++)
+                for (var i=1;i<=(Object.keys(d).length-2)/2;i++)
                 {
                     if(d["Word"+i]!="")
                         myWords.push({word:d["Word"+i], size:parseInt(d["Occurrence"+i])});
