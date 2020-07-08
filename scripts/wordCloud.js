@@ -38,12 +38,12 @@ function WordCloud(data, state)
 
     this.updateWords = function(state)
     {
-        console.log(data);
+        //console.log(data);
         myWords=[]
         data.filter(function(d){
             if(d.State == state)
             {
-                console.log(d);
+                //console.log(d);
                 for (var i=1;i<Object.keys(d).length/2;i++)
                 {
                     if(d["Word"+i]!="")
@@ -60,13 +60,13 @@ function WordCloud(data, state)
             .fontSize(function(d) { return scale(d.size); })      // font size of words
             .on("end", draw)
             .start();
-        console.log(myWords);
+        //console.log(myWords);
     }
 
     // This function takes the output of 'layout' above and draw the words
     // Wordcloud features that are THE SAME from one word to the other can be here
     function draw(words) {
-    console.log(words);
+    //console.log(words);
     svg
         .selectAll("g").remove();
     svg
