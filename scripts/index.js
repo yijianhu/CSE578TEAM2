@@ -23,15 +23,15 @@ function draw(error, data) {
     width = boundingBox.width- margin,
     height = boundingBox.height- margin;
     
-    console.log(data);
+    //console.log(data);
 
     var minCount, maxCount, detCount;
     minCount = d3.min(data[1],d=>parseInt(d.Count));
     maxCount = d3.max(data[1],d=>parseInt(d.Count));
     detCount = maxCount - minCount;
-    console.log(minCount);
-    console.log(detCount);
-    console.log(maxCount);
+    // console.log(minCount);
+    // console.log(detCount);
+    // console.log(maxCount);
 
 
     var color = d3.scaleThreshold()
@@ -148,77 +148,4 @@ function draw(error, data) {
         return tooltip.style("visibility", "visible")
         .html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );});
         //.html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );});
-  
-  
-    function animation()
-    {
-      map
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>0)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>10)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>15)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>20)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>25)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>30)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>35)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          if(d.properties.Count>40)
-            return "#FFFFFF";
-          return color(d.properties.Count);
-        })
-        .transition().delay(t/2)
-        .transition().duration(t)
-        .attr("fill",function(d){
-          return color(d.properties.Count);
-        })
-    }
-  
-    d3.select("body").on("keydown",function(){
-      if(d3.event.key == 'c' || d3.event.key=='C')
-      {
-          animation();
-      }
-    })
   }

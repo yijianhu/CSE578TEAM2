@@ -67,7 +67,6 @@ function WordCloud(data, state)
     // This function takes the output of 'layout' above and draw the words
     // Wordcloud features that are THE SAME from one word to the other can be here
     function draw(words) {
-    //console.log(words);
     var alphaScale = d3.scaleLinear()
                         .domain([20,78])
                         .range([0.5,1]);
@@ -78,11 +77,11 @@ function WordCloud(data, state)
     g.attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")");
     var text = g.selectAll("text").data(words,d=>d.text);
     text.attr("class","update")
-        .transition().duration(d=>1000*alphaScale(parseInt(d.size)))
+        .transition()
         .style("font-size", function(d) { return d.size+"px"; })//.transition().duration(d=>100*alphaScale(d.size))
         .style("fill", "#69b3a2")
-        .transition().duration(d=>2000*alphaScale(d.size))
         .style('opacity',d=>alphaScale(d.size))
+        .duration(d=>2000*alphaScale(d.size))
         .attr("text-anchor", "middle")
         .style("font-family", "Impact")
         .attr("transform", function(d) {
@@ -114,9 +113,9 @@ function WordCloud(data, state)
             })
             .text(function(d) { return d.text; })
             ;
-    svg.selectAll(".exit").transition().duration(1000).style("fill", 'gray');
+    svg.selectAll(".exit").transition().style("fill", 'gray')//.duration(1000)
+                          .style("opacity", 0.1).duration(3000);
     
-    
-    
+
     }
 }
