@@ -2,15 +2,18 @@
 <html>
     <head> 
         <link rel="stylesheet" href="style.css">
+
     </head>
 
     <body>
         <svg id="map"></svg>
         <svg id="wordcloud"></svg>
+
     </body>
 
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
     <script src="./scripts/d3/d3.v4.js"></script>
     <script src="./scripts/d3/d3.scale.chromatic.js"></script>
     <script src="./scripts/d3/d3.topojson.js"></script>
@@ -18,5 +21,12 @@
     <script src="./scripts/d3/d3.layout.cloud.js"></script>
     <script src='./scripts/wordCloud.js'></script>
     <script src='./scripts/index.js'></script>
+    <div class="content">
+        <script src="scripts/traffic.js"></script>
+    </div>
+    <div class="content">
+        <select id="selectButton"></select>
+    </div>
+
 
 </html>
