@@ -68,7 +68,8 @@ function traffic(data, groups) {
     //     //   data.push({""})    // add data points for the last 20 parts maybe idk
     // }
 
-
+    // initialize selected option
+    let selectedOption = groups[0];
 
 
     // A color scale: one color for each group
@@ -101,6 +102,20 @@ function traffic(data, groups) {
         return d.x;
     }).left;
 
+    // Add the line
+    let line = svg
+        .append("path")
+        .datum(data.filter(function(d){return d.id===groups[0]}))
+        .attr("fill", "none")
+        .attr("stroke", function (d) {
+            return myColor(groups[0])
+        })
+        .attr("stroke-width", 4)
+        .attr("d", d3.line()
+            .x(function(d) { return x(d.x) })
+            .y(function(d) { return y(d.y) })
+        );
+
     // Create the circle that travels along the curve of chart
     var focus = svg
         .append('g')
@@ -118,19 +133,8 @@ function traffic(data, groups) {
         .attr("text-anchor", "left")
         .attr("alignment-baseline", "middle");
 
-    // Add the line
-   let line = svg
-        .append("path")
-        .datum(data.filter(function(d){return d.id===groups[0]}))
-        .attr("fill", "none")
-        .attr("stroke", function (d) {
-            return myColor(groups[0])
-        })
-        .attr("stroke-width", 4)
-        .attr("d", d3.line()
-            .x(function(d) { return x(d.x) })
-            .y(function(d) { return y(d.y) })
-        );
+
+
 
     // Create a rect on top of the svg area: this rectangle recovers mouse position
     svg
@@ -153,8 +157,8 @@ function traffic(data, groups) {
     function mousemove() {
         // recover coordinate we need
         let x0 = x.invert(d3.mouse(this)[0]);
-        let i = bisect(data.filter(function(d){return d.id===groups[0]}), x0, 1);
-        let selectedData = data.filter(function(d){return d.id===groups[0]})[i];
+        let i = bisect(data.filter(function(d){return d.id===selectedOption}), x0, 1);
+        let selectedData = data.filter(function(d){return d.id===selectedOption})[i];
         focus
             .attr("cx", x(selectedData.x))
             .attr("cy", y(selectedData.y));
@@ -169,7 +173,7 @@ function traffic(data, groups) {
     }
     function update(selectedGroup) {
         // Create new data with the selection?
-        let dataFilter = data.filter(function(d){return d.id===selectedGroup})
+        let dataFilter = data.filter(function(d){return d.id===selectedGroup});
 
         line
             .datum(dataFilter)
@@ -186,7 +190,7 @@ function traffic(data, groups) {
     }
     d3.select("#selectButton").on("change", function (d) {
         // recover chosen option
-        let selectedOption = d3.select(this).property("value");
+        selectedOption = d3.select(this).property("value");
         //run update() using the selected option
         update(selectedOption);
     })
