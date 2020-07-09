@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul  8 19:00:28 2020
+
+@author: sharadhi
+"""
+
+import json 
+import csv 
+
+checkin_filepath = '/Users/sharadhi/Documents/Summer_semester/Data_Visualization/Group_project/yelp_dataset/checkin.json'
+
+business_filepath = '/Users/sharadhi/Documents/Summer_semester/Data_Visualization/Group_project/yelp_dataset/business.json'
+
+state_business = {}
+
+business_data  = []
+
+with open( business_filepath ) as f:
+    
+    for line in f:
+        
+        business_data.append( json.loads( line ) )
+        
+for line in business_data:
+    
+    if( line[ 'state' ] not in state_business ):
+        
+        state_business[ line[ 'state' ] ] = []
+        
+        state_business[ line[ 'state' ] ].append( line[ 'business_id' ] )
+        
+    else:
+        
+        state_business[ line[ 'state' ] ].append( line[ 'business_id' ] )
+        
+print( len( state_business ) )
+
+for key in state_business:
+    
+    print( len( state_business[ key ] ) )
+    
+csv_filepath = '/Users/sharadhi/Documents/Summer_semester/Data_Visualization/Group_project/yelp_dataset/rounded_reviews.csv'
+
+line_count = 0 
+b_id = []
+review = []
+
+with open( csv_filepath ) as csv_file:
+    
+    csv_reader = csv.reader( csv_file , delimiter = ',' )
+    
+    for row in csv_reader:
+        
+        if line_count == 0:
+            
+            line_count += 1
+            
+        else:
+            
+            b_id.append( row[ 0 ] )
+            
+            review.append( row[ 1 ] )
+            
+print( len( b_id ) )
+print( len( review ) )
+
+state_reviews = {}
+
+for key in state_business:
+    
+    print( key )
+    
+    for b in state_business[ key ]:
+        
+        if b in b_id:
+            
+            if key not in state_reviews:
+                
+                state_reviews[ key ] = []
+                
+                state_reviews[ key ].append( ( b , review[ b_id.index( b ) ] ) )
+                
+            else:
+                
+                state_reviews[ key ].append( ( b , review[ b_id.index( b ) ] ) )
+                
+for key in state_reviews:
+    
+    print( len( state_reviews[ key ] ) )
+                
+final_reviews = {}
+
+for key in state_reviews:
+    
+    if( len( state_reviews[ key ] ) <= 3 ):
+        
+        final_reviews[ key ] = state_reviews[ key ]
+        
+    else:
+        
+        lst = state_reviews[ key ]
+        
+        lst.sort( key = lambda x : x[ 1 ] )
+        
+        lst.reverse()
+        
+        final_reviews[ key ] = [ lst[ 0 ] , lst[ 1 ] , lst[ 2 ] ]
+        
+print( final_reviews )
+        
+        
+                
+        
+        
+            
