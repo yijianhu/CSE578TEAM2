@@ -31,10 +31,10 @@ var svg = d3.select(".content")
 
 //Read the data
 // data = [];
-d3.csv("./data/checkin_example.csv",function(data) {
+d3.csv("./data/checkin_combined.csv",function(data) {
     // list of groups in the data
 
-    let allGroups = d3.map(data, function(d){return(d.id)}).keys();
+    let allGroups = d3.map(data, function(d){return(d.BusinessName)}).keys();
     console.log(allGroups);
 
 
@@ -82,9 +82,9 @@ function traffic(data, groups) {
 
 
 
-    // Add X axis --> it is a date format
+    // Add X axis
     var x = d3.scaleLinear()
-        .domain([1,120])
+        .domain([0,23])
         .range([ 0, width ]);
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
@@ -92,28 +92,28 @@ function traffic(data, groups) {
 
     // Add Y axis
     var y = d3.scaleLinear()
-        .domain([0, 13])
+        .domain([0, 100])
         .range([ height, 0 ]);
     svg.append("g")
         .call(d3.axisLeft(y));
 
     // This allows to find the closest X index of the mouse:
     var bisect = d3.bisector(function(d) {
-        return d.x;
+        return d.TimeStamp;
     }).left;
 
     // Add the line
     let line = svg
         .append("path")
-        .datum(data.filter(function(d){return d.id===groups[0]}))
+        .datum(data.filter(function(d){return d.BusinessName===groups[0]}))
         .attr("fill", "none")
         .attr("stroke", function (d) {
             return myColor(groups[0])
         })
         .attr("stroke-width", 4)
         .attr("d", d3.line()
-            .x(function(d) { return x(d.x) })
-            .y(function(d) { return y(d.y) })
+            .x(function(d) { return x(d.TimeStamp) })
+            .y(function(d) { return y(d.Count) })
         );
 
     // Create the circle that travels along the curve of chart
@@ -157,15 +157,15 @@ function traffic(data, groups) {
     function mousemove() {
         // recover coordinate we need
         let x0 = x.invert(d3.mouse(this)[0]);
-        let i = bisect(data.filter(function(d){return d.id===selectedOption}), x0, 1);
-        let selectedData = data.filter(function(d){return d.id===selectedOption})[i];
+        let i = bisect(data.filter(function(d){return d.BusinessName===selectedOption}), x0, 1);
+        let selectedData = data.filter(function(d){return d.BusinessName===selectedOption})[i];
         focus
-            .attr("cx", x(selectedData.x))
-            .attr("cy", y(selectedData.y));
+            .attr("cx", x(selectedData.TimeStamp))
+            .attr("cy", y(selectedData.Count));
         focusText
-            .html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-            .attr("x", x(selectedData.x)+15)
-            .attr("y", y(selectedData.y))
+            .html("x:" + selectedData.TimeStamp + "  -  " + "y:" + selectedData.Count)
+            .attr("x", x(selectedData.TimeStamp)+15)
+            .attr("y", y(selectedData.Count))
     }
     function mouseout() {
         focus.style("opacity", 0);
@@ -173,15 +173,15 @@ function traffic(data, groups) {
     }
     function update(selectedGroup) {
         // Create new data with the selection?
-        let dataFilter = data.filter(function(d){return d.id===selectedGroup});
+        let dataFilter = data.filter(function(d){return d.BusinessName===selectedGroup});
 
         line
             .datum(dataFilter)
             .transition()
             .duration(1000)
             .attr("d", d3.line()
-                .x(function(d) { return x(d.x) })
-                .y(function(d) { return y(d.y) })
+                .x(function(d) { return x(d.TimeStamp) })
+                .y(function(d) { return y(d.Count) })
             )
             .attr("stroke", function (d) {
                 return myColor(selectedGroup)
