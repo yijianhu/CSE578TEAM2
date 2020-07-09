@@ -13,9 +13,48 @@ var svg = d3.select(".content")
         "translate(" + margin.left + "," + margin.top + ")");
 
 
+
+
+
+
+
+// // add the options to the button
+// d3.select("#selectButton")
+//     .selectAll('myOptions')
+//     .data(allGroups)
+//     .enter()
+//     .append('option')
+//     .text(function (d) { return d; }) // text showed in the menu
+//     .attr("value", function (d) { return d; }); // corresponding value returned by the button
+
+
+
 //Read the data
-data = [];
-d3.csv("./data/checkin_example.csv",function(d) {traffic(d)} );
+// data = [];
+d3.csv("./data/checkin_example.csv",function(data) {
+    // list of groups in the data
+
+    let allGroups = d3.map(data, function(d){return(d.id)}).keys();
+    console.log(allGroups);
+
+
+    // add the options to the button
+    d3.select("#selectButton")
+        .selectAll('myOptions')
+        .data(allGroups)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; }); // corresponding value returned by the button
+
+
+    // A color scale: one color for each group
+    var myColor = d3.scaleOrdinal()
+        .domain(allGroups)
+        .range(d3.schemeSet2);
+
+    traffic(data, allGroups)
+} );
 
 
 
@@ -24,13 +63,14 @@ d3.csv("./data/checkin_example.csv",function(d) {traffic(d)} );
 
 
 
-function traffic(data) {
+function traffic(data, groups) {
 
     console.log("here");
     console.log(data);
     // for(var i=0; i<20; ++i){
     //     //   data.push({""})    // add data points for the last 20 parts maybe idk
     // }
+
 
 
 
@@ -57,7 +97,9 @@ function traffic(data) {
         .call(d3.axisLeft(y));
 
     // This allows to find the closest X index of the mouse:
-    var bisect = d3.bisector(function(d) { return d.x; }).left;
+    var bisect = d3.bisector(function(d) {
+        return d.x;
+    }).left;
 
     // Create the circle that travels along the curve of chart
     var focus = svg
@@ -79,7 +121,7 @@ function traffic(data) {
     // Add the line
     svg
         .append("path")
-        .datum(data)
+        .datum(data.filter(function(d){return d.id===groups[0]}))
         .attr("fill", "none")
         .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
@@ -109,8 +151,8 @@ function traffic(data) {
     function mousemove() {
         // recover coordinate we need
         let x0 = x.invert(d3.mouse(this)[0]);
-        let i = bisect(data, x0, 1);
-        let selectedData = data[i];
+        let i = bisect(data.filter(function(d){return d.id===groups[0]}), x0, 1);
+        let selectedData = data.filter(function(d){return d.id===groups[0]})[i];
         focus
             .attr("cx", x(selectedData.x))
             .attr("cy", y(selectedData.y));
