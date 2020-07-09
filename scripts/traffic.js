@@ -48,10 +48,7 @@ d3.csv("./data/checkin_example.csv",function(data) {
         .attr("value", function (d) { return d; }); // corresponding value returned by the button
 
 
-    // A color scale: one color for each group
-    var myColor = d3.scaleOrdinal()
-        .domain(allGroups)
-        .range(d3.schemeSet2);
+
 
     traffic(data, allGroups)
 } );
@@ -74,7 +71,10 @@ function traffic(data, groups) {
 
 
 
-
+    // A color scale: one color for each group
+    let myColor = d3.scaleOrdinal()
+        .domain(groups)
+        .range(d3.schemeSet2);
 
 
 
@@ -119,12 +119,14 @@ function traffic(data, groups) {
         .attr("alignment-baseline", "middle");
 
     // Add the line
-    svg
+   let line = svg
         .append("path")
         .datum(data.filter(function(d){return d.id===groups[0]}))
         .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 1.5)
+        .attr("stroke", function (d) {
+            return myColor(groups[0])
+        })
+        .attr("stroke-width", 4)
         .attr("d", d3.line()
             .x(function(d) { return x(d.x) })
             .y(function(d) { return y(d.y) })
@@ -165,6 +167,29 @@ function traffic(data, groups) {
         focus.style("opacity", 0);
         focusText.style("opacity", 0)
     }
+    function update(selectedGroup) {
+        // Create new data with the selection?
+        let dataFilter = data.filter(function(d){return d.id===selectedGroup})
+
+        line
+            .datum(dataFilter)
+            .transition()
+            .duration(1000)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d.x) })
+                .y(function(d) { return y(d.y) })
+            )
+            .attr("stroke", function (d) {
+                return myColor(selectedGroup)
+            })
+
+    }
+    d3.select("#selectButton").on("change", function (d) {
+        // recover chosen option
+        let selectedOption = d3.select(this).property("value");
+        //run update() using the selected option
+        update(selectedOption);
+    })
 
 }
 
