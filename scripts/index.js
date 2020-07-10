@@ -148,6 +148,8 @@ function draw(error, data) {
       .attr('class', function(d) {
         return d.properties.NAME;
       })
+      .attr("stroke","white")
+      .attr("stroke-width","1px")
       .attr("fill", function(d) {
           return color(d.properties.Count);})
 
@@ -231,15 +233,15 @@ function draw(error, data) {
           if(d.properties.NAME==selectedState)
           {
             selectedState="";
-            d3.select("#map").selectAll("path").style("opacity",1);
+            d3.select("#map").selectAll("path").style("opacity",1).attr("stroke","white").attr("stroke-width","1px");
           }
           else{
             if(selectedState!=""){
               wordcloud.updateWords(d.properties.NAME);
             }
             selectedState=d.properties.NAME;
-            d3.select("#map").selectAll("path").style("opacity",0.2);
-            d3.select(this).style("opacity",1);
+            d3.select("#map").selectAll("path").style("opacity",0.2).attr("stroke","white").attr("stroke-width","1px");
+            d3.select(this).style("opacity",1).attr("stroke","orange").attr("stroke-width","2px");
           }
           currentState = abbrState(d.properties.NAME, "abbr");
           // console.log(abbrState(d.properties.NAME, "abbr"));
