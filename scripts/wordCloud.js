@@ -101,6 +101,7 @@ function WordCloud(data, state)
     text
         .enter().append("text")
             .attr("class","enter")
+            .attr("id",d=>d.text)
             .style("fill", "60DA3F")
             .transition()
             .style("font-size", function(d) { return d.size+"px"; })
@@ -117,5 +118,16 @@ function WordCloud(data, state)
                           .style("opacity", 0.1).duration(3000);
     
 
+
+    svg.selectAll("text")
+    .on("mouseover", function(d) 
+    {   
+        svg.selectAll("text").transition().style("opacity",0.1).duration(1000);
+        d3.select(this).transition().style("opacity",1).duration(1000);
+    })
+    .on("mouseout", function(){
+        svg.selectAll("text").transition().style("opacity",d=>alphaScale(d.size)).duration(1000);
+        svg.selectAll(".exit").transition().style("opacity",0.1).duration(1000);
+    });
     }
 }
