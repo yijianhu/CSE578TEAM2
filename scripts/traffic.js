@@ -29,9 +29,11 @@ var svg = d3.select(".content")
 
 
 let dataset = 0;
-
-
-
+let x = 0;
+let y = 0;
+let line = 0;
+let myColor = 0;
+let selectedOption = 0;
 
 
 //Read the data
@@ -78,6 +80,27 @@ function updateBusinessSelector() {
 
 
 
+function update(selectedGroup) {
+    // console.log(currentState);
+    // Create new data with the selection?
+    let dataFilter = dataset.filter(function(d){return d.BusinessName===selectedGroup});
+
+    line
+        .datum(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("d", d3.line()
+            .x(function(d) { return x(d.TimeStamp) })
+            .y(function(d) { return y(d.Count) })
+        )
+        .attr("stroke", function (d) {
+            return myColor(selectedGroup)
+        });
+
+    selectedOption = document.getElementById("selectButton").options[0].value;
+
+}
+
 
 
 function traffic(data, groups) {
@@ -89,11 +112,11 @@ function traffic(data, groups) {
     // }
 
     // initialize selected option
-    let selectedOption = groups[0];
+    selectedOption = d3.select(this).property("value");
 
 
     // A color scale: one color for each group
-    let myColor = d3.scaleOrdinal()
+    myColor = d3.scaleOrdinal()
         .domain(groups)
         .range(d3.schemeSet2);
 
@@ -103,7 +126,7 @@ function traffic(data, groups) {
 
 
     // Add X axis
-    var x = d3.scaleLinear()
+    x = d3.scaleLinear()
         .domain([0,23])
         .range([ 0, width ]);
     svg.append("g")
@@ -111,7 +134,7 @@ function traffic(data, groups) {
         .call(d3.axisBottom(x));
 
     // Add Y axis
-    var y = d3.scaleLinear()
+    y = d3.scaleLinear()
         .domain([0, 100])
         .range([ height, 0 ]);
     svg.append("g")
@@ -123,7 +146,7 @@ function traffic(data, groups) {
     }).left;
 
     // Add the line
-    let line = svg
+    line = svg
         .append("path")
         .datum(data.filter(function(d){return d.BusinessName===groups[0]}))
         .attr("fill", "none")
@@ -176,9 +199,11 @@ function traffic(data, groups) {
 
     function mousemove() {
         // recover coordinate we need
+        // selectedOption = d3.select(this).options[0].text;
         let x0 = x.invert(d3.mouse(this)[0]);
         let i = bisect(data.filter(function(d){return d.BusinessName===selectedOption}), x0, 1);
         let selectedData = data.filter(function(d){return d.BusinessName===selectedOption})[i];
+        // console.log("error?", selectedOption);
         focus
             .attr("cx", x(selectedData.TimeStamp))
             .attr("cy", y(selectedData.Count));
@@ -191,30 +216,13 @@ function traffic(data, groups) {
         focus.style("opacity", 0);
         focusText.style("opacity", 0)
     }
-    function update(selectedGroup) {
-        // console.log(currentState);
-        // Create new data with the selection?
-        let dataFilter = data.filter(function(d){return d.BusinessName===selectedGroup});
 
-        line
-            .datum(dataFilter)
-            .transition()
-            .duration(1000)
-            .attr("d", d3.line()
-                .x(function(d) { return x(d.TimeStamp) })
-                .y(function(d) { return y(d.Count) })
-            )
-            .attr("stroke", function (d) {
-                return myColor(selectedGroup)
-            })
-
-    }
     d3.select("#selectButton").on("change", function (d) {
         // recover chosen option
         selectedOption = d3.select(this).property("value");
         //run update() using the selected option
         update(selectedOption);
-    })
+    });
 
 }
 

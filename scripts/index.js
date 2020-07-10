@@ -6,7 +6,7 @@ var azzip = "./data/AZzip.geojson";
 //geoUrl=azzip;
 
 
-var t = 100
+var t = 100;
 
 var q = d3_queue.queue(1)
 .defer(d3.json, geoUrl)
@@ -14,7 +14,7 @@ var q = d3_queue.queue(1)
 .awaitAll(draw);
 
 // for use in the traffic chart, we must get the state that the user clicks on
-let currentState = "AZ";
+let currentState = "";
 function abbrState(input, to){
 
     var states = [
@@ -242,7 +242,10 @@ function draw(error, data) {
             d3.select(this).style("opacity",1);
           }
           currentState = abbrState(d.properties.NAME, "abbr");
-          console.log(abbrState(d.properties.NAME, "abbr"))
-          updateBusinessSelector()
+          // console.log(abbrState(d.properties.NAME, "abbr"));
+          updateBusinessSelector();
+          update(d3.select("#selectButton").property("value"));
+          // console.log("720pm");
+          // console.log(d3.select("#selectButton").property("value"));
     })
   }
