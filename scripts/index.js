@@ -206,6 +206,8 @@ function draw(error, data) {
     var wordcloud = new WordCloud(data[1]);
     wordcloud.updateWords("Maine");
   
+    var selectedState = "";
+
     map
       .on("mouseover", function(d) 
       {   
@@ -219,11 +221,26 @@ function draw(error, data) {
       .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
       .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
       .on("mouseover", function(d) {
-        wordcloud.updateWords(d.properties.NAME);
+        if(selectedState==""){
+          wordcloud.updateWords(d.properties.NAME);
+        }
         return tooltip.style("visibility", "visible")
         .html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );})
         //.html(d.properties.NAME + "<br/>" + "Number of Restaurants:  " + "<br/>" + d.properties.Count );});
       .on("click", function (d) {
+          if(d.properties.NAME==selectedState)
+          {
+            selectedState="";
+            d3.select("#map").selectAll("path").style("opacity",1);
+          }
+          else{
+            selectedState=d.properties.NAME;
+            wordcloud.updateWords(d.properties.NAME);
+            d3.select("#map").selectAll("path").style("opacity",0.2);
+            d3.select(this).style("opacity",1);
+          }
+          
+
           currentState = abbrState(d.properties.NAME, "abbr");
           console.log(abbrState(d.properties.NAME, "abbr"))
           updateBusinessSelector()
