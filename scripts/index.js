@@ -234,13 +234,13 @@ function draw(error, data) {
             d3.select("#map").selectAll("path").style("opacity",1);
           }
           else{
+            if(selectedState!=""){
+              wordcloud.updateWords(d.properties.NAME);
+            }
             selectedState=d.properties.NAME;
-            wordcloud.updateWords(d.properties.NAME);
             d3.select("#map").selectAll("path").style("opacity",0.2);
             d3.select(this).style("opacity",1);
           }
-          
-
           currentState = abbrState(d.properties.NAME, "abbr");
           console.log(abbrState(d.properties.NAME, "abbr"))
           updateBusinessSelector()
