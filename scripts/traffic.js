@@ -34,7 +34,7 @@ let y = 0;
 let line = 0;
 let myColor = 0;
 let selectedOption = 0;
-
+let yAxis = 0;
 
 //Read the data
 // data = [];
@@ -85,6 +85,12 @@ function update(selectedGroup) {
     // Create new data with the selection?
     let dataFilter = dataset.filter(function(d){return d.BusinessName===selectedGroup});
 
+    y.domain([0, Math.max(d3.max(dataFilter, function(d) { return +d.Count;  }), 10) ]);
+    yAxis
+        .transition()
+        .duration(1000)
+        .call(d3.axisLeft(y));
+
     line
         .datum(dataFilter)
         .transition()
@@ -96,6 +102,11 @@ function update(selectedGroup) {
         .attr("stroke", function (d) {
             return myColor(selectedGroup)
         });
+
+    // console.log("max", Math.max(d3.max(dataFilter, function(d) { return +d.Count;  }), 10));
+    // console.log(dataFilter);
+
+
 }
 
 
@@ -134,7 +145,7 @@ function traffic(data, groups) {
     y = d3.scaleLinear()
         .domain([0, 100])
         .range([ height, 0 ]);
-    svg.append("g")
+    yAxis = svg.append("g")
         .call(d3.axisLeft(y));
 
     // This allows to find the closest X index of the mouse:
