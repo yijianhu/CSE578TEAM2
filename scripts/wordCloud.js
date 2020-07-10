@@ -114,7 +114,7 @@ function WordCloud(data, state)
             })
             .text(function(d) { return d.text; })
             ;
-    svg.selectAll(".exit").transition().style("fill", 'gray')//.duration(1000)
+    svg.selectAll(".exit").transition().style("fill", 'gray').attr("transform", function(d) {return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";})//.duration(1000)
                           .style("opacity", 0.1).duration(3000);
     
 
@@ -122,12 +122,13 @@ function WordCloud(data, state)
     svg.selectAll("text")
     .on("mouseover", function(d) 
     {   
-        svg.selectAll("text").transition().style("opacity",0.1).duration(1000);
-        d3.select(this).transition().style("opacity",1).duration(1000);
+        console.log(d);
+        svg.selectAll("text").transition().style("opacity",0.1).attr("transform", function(d) {return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";}).duration(1000);
+        d3.select(this).transition().style("opacity",1).attr("transform",d=>{return "translate(" + [d.x, d.y] + ")rotate(" + 0 + ")";}).duration(1000);
     })
     .on("mouseout", function(){
-        svg.selectAll("text").transition().style("opacity",d=>alphaScale(d.size)).duration(1000);
-        svg.selectAll(".exit").transition().style("opacity",0.1).duration(1000);
+        svg.selectAll("text").transition().style("opacity",d=>alphaScale(d.size)).attr("transform", function(d) {return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";}).duration(1000);
+        svg.selectAll(".exit").transition().style("opacity",0.1).attr("transform", function(d) {return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";}).duration(1000);
     });
     }
 }
