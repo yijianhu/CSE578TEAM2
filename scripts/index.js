@@ -246,6 +246,12 @@ function draw(error, data) {
           currentState = abbrState(d.properties.NAME, "abbr");
           // console.log(abbrState(d.properties.NAME, "abbr"));
           updateBusinessSelector();
+          if(document.getElementById("selectButton").options[0] != null) {
+              selectedOption = document.getElementById("selectButton").options[0].value;
+          }
+          else {
+              selectedOption = 0;
+          }
           update(d3.select("#selectButton").property("value"));
           // console.log("720pm");
           // console.log(d3.select("#selectButton").property("value"));

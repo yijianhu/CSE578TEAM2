@@ -96,14 +96,6 @@ function update(selectedGroup) {
         .attr("stroke", function (d) {
             return myColor(selectedGroup)
         });
-
-    if(document.getElementById("selectButton").options[0] != null) {
-        selectedOption = document.getElementById("selectButton").options[0].value;
-    }
-    else {
-        selectedOption = 0;
-    }
-
 }
 
 
