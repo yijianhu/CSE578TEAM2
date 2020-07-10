@@ -28,33 +28,53 @@ var svg = d3.select(".content")
 //     .attr("value", function (d) { return d; }); // corresponding value returned by the button
 
 
+let dataset = 0;
+
+
+
+
 
 //Read the data
 // data = [];
 d3.csv("./data/checkin_combined.csv",function(data) {
     // list of groups in the data
 
-    let allGroups = d3.map(data, function(d){return(d.BusinessName)}).keys();
-    console.log(allGroups);
+    let allGroups = d3.map(data.filter(function(d){return d.State===currentState}), function(d){return(d.BusinessName)}).keys();
 
+    console.log(allGroups);
+    dataset = data;
+
+
+    updateBusinessSelector(data);
+
+
+
+
+    traffic(data, allGroups);
+} );
+
+
+function updateBusinessSelector() {
+
+    let stateGroups = d3.map(dataset.filter(function(d){return d.State===currentState}), function(d){return(d.BusinessName)}).keys();
+
+    // console.log("asdfasdf")
+    // console.log(d3.select("#selectButton")
+    //     .selectAll('option'));
+
+    d3.select("#selectButton")
+        .selectAll('option')
+        .remove();
 
     // add the options to the button
     d3.select("#selectButton")
         .selectAll('myOptions')
-        .data(allGroups)
+        .data(stateGroups)
         .enter()
         .append('option')
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }); // corresponding value returned by the button
-
-
-
-
-    traffic(data, allGroups)
-} );
-
-
-
+}
 
 
 
@@ -172,6 +192,7 @@ function traffic(data, groups) {
         focusText.style("opacity", 0)
     }
     function update(selectedGroup) {
+        // console.log(currentState);
         // Create new data with the selection?
         let dataFilter = data.filter(function(d){return d.BusinessName===selectedGroup});
 
