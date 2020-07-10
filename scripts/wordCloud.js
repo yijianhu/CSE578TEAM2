@@ -69,7 +69,7 @@ function WordCloud(data, state)
     function draw(words) {
     var alphaScale = d3.scaleLinear()
                         .domain([20,78])
-                        .range([0.5,1]);
+                        .range([0.3,1]);
     // svg
     //     .selectAll("g").remove();
     // var updateWord = g.attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
@@ -79,7 +79,7 @@ function WordCloud(data, state)
     text.attr("class","update")
         .transition()
         .style("font-size", function(d) { return d.size+"px"; })//.transition().duration(d=>100*alphaScale(d.size))
-        .style("fill", "#69b3a2")
+        .style("fill", "#00A4C2")
         .style('opacity',d=>alphaScale(d.size))
         .duration(d=>2000*alphaScale(d.size))
         .attr("text-anchor", "middle")
@@ -102,12 +102,12 @@ function WordCloud(data, state)
         .enter().append("text")
             .attr("class","enter")
             .attr("id",d=>d.text)
-            .style("fill", "60DA3F")
+            .style("fill", "#9BC900")
             .style("opacity",0)
             .transition()
             .style("font-size", function(d) { return d.size+"px"; })
             .style('opacity',d=>alphaScale(d.size))
-            .duration(d=>1000/alphaScale(d.size))
+            .duration(d=>2000*alphaScale(d.size))
             .attr("text-anchor", "middle")
             .style("font-family", "Impact")
             .attr("transform", function(d) {
