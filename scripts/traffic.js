@@ -133,13 +133,30 @@ function traffic(data, groups) {
 
 
 
+    let tickNames = ["12am","1am","2am","3am","4am","5am","6am","7am","8am","9am","10am","11am",
+                     "12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm"];
     // Add X axis
     x = d3.scaleLinear()
         .domain([0,23])
+        // .ticks(d3.timeHour.every(3), "%I %p")
         .range([ 0, width ]);
+
+
+    // axis(d3.scaleTime())
+    //     .ticks(d3.timeHour.every(1), "%I %p")
+    //     .render();
+        // .ticks(24);
+        // .tickFormat(function (d) {
+        //     return tickNames[d];
+        // });
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x)
+            .ticks(24)
+            .tickFormat(function (d) {
+                return tickNames[d];
+            })
+        );
 
     // Add Y axis
     y = d3.scaleLinear()
@@ -220,7 +237,7 @@ function traffic(data, groups) {
                 .attr("cx", x(selectedData.TimeStamp))
                 .attr("cy", y(selectedData.Count));
             focusText
-                .html("x:" + selectedData.TimeStamp + "  -  " + "y:" + selectedData.Count)
+                .html(tickNames[selectedData.TimeStamp] + "  -  " + "Count:" + selectedData.Count)
                 .attr("x", x(selectedData.TimeStamp) + 15)
                 .attr("y", y(selectedData.Count))
         }
