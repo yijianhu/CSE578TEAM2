@@ -63,8 +63,8 @@ body, html {
     width: 45%;
     height: 80%;
 
-    stroke: white;
-    stroke-width: 1px;
+    /* stroke: white; */
+    /* stroke-width: 1px; */
   }
 
   #wordcloud
