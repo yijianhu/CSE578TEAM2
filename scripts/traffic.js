@@ -97,7 +97,12 @@ function update(selectedGroup) {
             return myColor(selectedGroup)
         });
 
-    selectedOption = document.getElementById("selectButton").options[0].value;
+    if(document.getElementById("selectButton").options[0] != null) {
+        selectedOption = document.getElementById("selectButton").options[0].value;
+    }
+    else {
+        selectedOption = 0;
+    }
 
 }
 
@@ -193,8 +198,11 @@ function traffic(data, groups) {
 
     // What happens when the mouse move -> show the annotations at the right positions.
     function mouseover() {
-        focus.style("opacity", 1);
-        focusText.style("opacity",1)
+        if(selectedOption) {
+            console.log("mouseover", selectedOption);
+            focus.style("opacity", 1);
+            focusText.style("opacity", 1)
+        }
     }
 
     function mousemove() {
@@ -204,13 +212,15 @@ function traffic(data, groups) {
         let i = bisect(data.filter(function(d){return d.BusinessName===selectedOption}), x0, 1);
         let selectedData = data.filter(function(d){return d.BusinessName===selectedOption})[i];
         // console.log("error?", selectedOption);
-        focus
-            .attr("cx", x(selectedData.TimeStamp))
-            .attr("cy", y(selectedData.Count));
-        focusText
-            .html("x:" + selectedData.TimeStamp + "  -  " + "y:" + selectedData.Count)
-            .attr("x", x(selectedData.TimeStamp)+15)
-            .attr("y", y(selectedData.Count))
+        if(selectedData) {
+            focus
+                .attr("cx", x(selectedData.TimeStamp))
+                .attr("cy", y(selectedData.Count));
+            focusText
+                .html("x:" + selectedData.TimeStamp + "  -  " + "y:" + selectedData.Count)
+                .attr("x", x(selectedData.TimeStamp) + 15)
+                .attr("y", y(selectedData.Count))
+        }
     }
     function mouseout() {
         focus.style("opacity", 0);
